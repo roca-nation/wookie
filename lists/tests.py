@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.core.urlresolvers import resolve #ch3.2
 from lists.views import home_page #ch3.2
 from django.http import HttpRequest #ch3.3
+from django.template.loader import render_to_string #ch4
 
 #test-driven ch3.1
 #class smokeTest(TestCase):
@@ -23,7 +24,14 @@ class HomePageTest(TestCase):
         response = home_page(request)
         self.assertTrue(response.content.startswith('<html>'))
         self.assertIn('<title>To-Do lists</title>', response.content)
-        self.assertTrue(response.content.endswith('</html>'))
+        #self.assertTrue(response.content.endswith('</html>'))#ch3
+        self.assertTrue(response.content.strip().endswith('</html>')) #ch4
+
+    def test_home_page_returns_correct_html(self):
+        request = HttpRequest()
+        response = home_page(request)
+        expected_html = render_to_string('home.html')
+        self.assertEqual(response.content.decode(), expected_html)
 
 
 
